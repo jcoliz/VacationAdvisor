@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "VacationAdvisor.WinUi (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "VacationAdvisor.WinUi (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
