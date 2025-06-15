@@ -14,6 +14,33 @@
     </Window.SystemBackdrop>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="25" />
+        </Grid.ColumnDefinitions>
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Background="Aqua"            
+            >
+            <TextBlock
+            Text="Welcome to Vacation Advisor!"
+            FontSize="24"
+            HorizontalAlignment="Center"
+            Margin="10" />
+        </Border>
+        <Frame
+            Grid.Row="1"
+            Grid.Column="2"
+            x:Name="MainFrame" />
 
+        <!-- You can add more UI elements here as needed -->
     </Grid>
 </Window>
