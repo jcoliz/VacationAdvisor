@@ -51,7 +51,7 @@ public sealed partial class MainWindow : Window
                     Role = textBox.Text[0] == '!' ? ChatMessage.RoleType.Assistant : ChatMessage.RoleType.User,
                     Contents = new List<ChatMessage.Content>
                     {
-                        new ChatMessage.Content
+                        new()
                         {
                             Type = ChatMessage.Content.ContentType.Text,
                             Text = textBox.Text
