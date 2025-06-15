@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Reflection;
+using Azure.Core;
+using Azure.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
+using VacationAdvisor.WinUi.Options;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,9 +35,26 @@ public partial class App : Application
         // https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host
         //
         _host = new HostBuilder()
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                config.AddTomlFile
+                (
+                    new EmbeddedFileProvider(Assembly.GetExecutingAssembly()),
+                    "config.toml",
+                    optional: true,
+                    reloadOnChange: false
+                );
+            })
             .ConfigureServices((context, services) =>
             {
                 services.AddSingleton<MainWindow>();
+                services.AddOptions<AiFoundryOptions>()
+                    .Bind(context.Configuration.GetSection(AiFoundryOptions.Section))
+                    .ValidateOnStart();
+                services.AddSingleton<TokenCredential>(sp =>
+                {
+                    return new DefaultAzureCredential();
+                });
             })
             .Build();
     }
