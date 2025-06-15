@@ -6,6 +6,7 @@
     xmlns:local="using:VacationAdvisor.WinUi"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winui="using:Mapsui.UI.WinUI"
     mc:Ignorable="d"
     Title="VacationAdvisor.WinUi">
 
@@ -36,10 +37,12 @@
             HorizontalAlignment="Center"
             Margin="10" />
         </Border>
-        <Frame
-            Grid.Row="1"
-            Grid.Column="2"
-            x:Name="MainFrame" />
+        <winui:MapControl 
+            x:Name="MyMap" 
+            VerticalAlignment="Stretch" 
+            HorizontalAlignment="Stretch" 
+            Grid.Row = "1"
+            Grid.Column = "2" />
 
         <!-- You can add more UI elements here as needed -->
     </Grid>
