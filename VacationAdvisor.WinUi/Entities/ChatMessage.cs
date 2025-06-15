@@ -16,11 +16,12 @@ public record ChatMessage
     {
         public enum ContentType
         {
+            Unsupported,
             Text,
             Image,
         }
 
-        public ContentType Type { get; set; } = ContentType.Text;
+        public ContentType Type { get; set; } = ContentType.Unsupported;
 
         public string? Text { get; set; } = null;
 

@@ -1,12 +1,14 @@
-using Azure;
-using Azure.Identity;
+
 using Azure.AI.Agents.Persistent;
 using System.Threading.Tasks;
 using VacationAdvisor.WinUi.Options;
 using Azure.Core;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.IO;
+using VacationAdvisor.WinUi.Entities;
+using System.Collections.Generic;
 
 namespace VacationAdvisor.WinUi.Services;
 
@@ -41,7 +43,7 @@ public class ChatClient(IOptions<AiFoundryOptions> options, TokenCredential cred
     /// <returns>
     /// Messages in the thread, including the agent's response.
     /// </returns>
-    public async Task<AsyncPageable<PersistentThreadMessage>> SendMessageAsync(
+    public async Task<IAsyncEnumerable<ChatMessage>> SendMessageAsync(
         PersistentAgentThread thread,
         string content)
     {
@@ -59,8 +61,33 @@ public class ChatClient(IOptions<AiFoundryOptions> options, TokenCredential cred
 
         await WaitForRunCompletionAsync(thread.Id, run.Id);
 
-        return _agentClient.Messages.GetMessagesAsync(
-            threadId: thread.Id, order: ListSortOrder.Ascending);
+        var rawMessages = _agentClient.Messages.GetMessagesAsync
+        (
+            threadId: thread.Id, order: ListSortOrder.Ascending
+        );
+
+        return rawMessages.Select(message => new ChatMessage
+        {
+            CreatedAt = message.CreatedAt,
+            Role = message.Role == MessageRole.User ? ChatMessage.RoleType.User : ChatMessage.RoleType.Assistant,
+            Contents = message.ContentItems.Select(contentItem => contentItem switch
+            {
+                MessageTextContent textContent => new ChatMessage.Content
+                {
+                    Type = ChatMessage.Content.ContentType.Text,
+                    Text = textContent.Text
+                },
+                MessageImageFileContent imageFileContent => new ChatMessage.Content
+                {
+                    Type = ChatMessage.Content.ContentType.Image,
+                    ImageId = imageFileContent.FileId
+                },
+                _ => new ChatMessage.Content
+                {
+                    Type = ChatMessage.Content.ContentType.Unsupported
+                }
+            }).ToList()
+        });
     }
 
     /// <summary>
@@ -89,18 +116,20 @@ public class ChatClient(IOptions<AiFoundryOptions> options, TokenCredential cred
     /// <param name="threadMessage"></param>
     /// <returns></returns>
     public async Task DisplayMessageAsync(
-        PersistentThreadMessage threadMessage)
+        ChatMessage threadMessage)
     {
         Console.Write($"{threadMessage.CreatedAt:yyyy-MM-dd HH:mm:ss} - {threadMessage.Role,10}: ");
-        foreach (MessageContent contentItem in threadMessage.ContentItems)
+        foreach (var contentItem in threadMessage.Contents)
         {
-            if (contentItem is MessageTextContent textItem)
+            // TODO: Could refactor content item to get rid of type
+            // and just check for nulls
+            if (contentItem.Type == ChatMessage.Content.ContentType.Text)
             {
-                Console.Write(textItem.Text);
+                Console.Write(contentItem.Text);
             }
-            else if (contentItem is MessageImageFileContent imageFileItem)
+            else if (contentItem.Type == ChatMessage.Content.ContentType.Image)
             {
-                await DisplayImageContentAsync(imageFileItem.FileId);
+                await DisplayImageContentAsync(contentItem.ImageId!);
             }
             Console.WriteLine();
         }
@@ -116,10 +145,8 @@ public class ChatClient(IOptions<AiFoundryOptions> options, TokenCredential cred
         var stream = result.ToStream();
         Directory.CreateDirectory("images");
         File.Delete($"images/{fileId}.png");
-        using (var fileStream = File.Create($"images/{fileId}.png"))
-        {
-            await stream.CopyToAsync(fileStream);
-        }
+        using var fileStream = File.Create($"images/{fileId}.png");
+        await stream.CopyToAsync(fileStream);
     }
 
     // Private methods
