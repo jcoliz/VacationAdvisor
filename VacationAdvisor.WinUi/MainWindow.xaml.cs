@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Mapsui;
+using Mapsui.Extensions;
+using Mapsui.Projections;
 using Mapsui.Tiling;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -28,6 +30,10 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
 
-        this.MyMap.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
+        MyMap.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
+        var saoPaulo = SphericalMercator.FromLonLat(-46.633, -23.55).ToMPoint();
+
+        // Fix: Use the correct method to set the center and zoom level
+        MyMap.Map.Home = n => n.CenterOnAndZoomTo(saoPaulo, 200f);
     }
 }

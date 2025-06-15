@@ -26,6 +26,13 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="25" />
         </Grid.ColumnDefinitions>
+        <winui:MapControl 
+            x:Name="MyMap" 
+            VerticalAlignment="Stretch" 
+            HorizontalAlignment="Stretch" 
+            Grid.RowSpan = "3"
+            Grid.ColumnSpan = "4" />
+
         <Border
             Grid.Row="1"
             Grid.Column="1"
@@ -37,12 +44,6 @@
             HorizontalAlignment="Center"
             Margin="10" />
         </Border>
-        <winui:MapControl 
-            x:Name="MyMap" 
-            VerticalAlignment="Stretch" 
-            HorizontalAlignment="Stretch" 
-            Grid.Row = "1"
-            Grid.Column = "2" />
 
         <!-- You can add more UI elements here as needed -->
     </Grid>
