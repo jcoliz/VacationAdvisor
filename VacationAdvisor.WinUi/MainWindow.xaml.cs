@@ -1,14 +1,17 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Mapsui.Extensions;
 using Mapsui.Projections;
+using Mapsui.Providers.Wms;
 using Mapsui.Tiling;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using VacationAdvisor.WinUi.Entities;
+using VacationAdvisor.WinUi.Services;
 using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -20,8 +23,12 @@ namespace VacationAdvisor.WinUi;
 /// </summary>
 public sealed partial class MainWindow : Window
 {
-    public MainWindow()
+    private readonly ChatClient _chatClient;
+
+    public MainWindow(ChatClient chatClient)
     {
+        _chatClient = chatClient;
+
         InitializeComponent();
 
         MyMap.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
@@ -46,21 +53,24 @@ public sealed partial class MainWindow : Window
         {
             if (textBox?.Text.Length > 0)
             {
-                var message = new ChatMessage
-                {
-                    Role = textBox.Text[0] == '!' ? ChatMessage.RoleType.Assistant : ChatMessage.RoleType.User,
-                    Contents = new List<ChatMessage.Content>
-                    {
-                        new()
-                        {
-                            Type = ChatMessage.Content.ContentType.Text,
-                            Text = textBox.Text
-                        }
-                    }
-                };
-                Messages.Add(message);
+                await SendMessage(textBox.Text);
                 textBox.Text = string.Empty;
             }
+        }
+    }
+
+    private async Task SendMessage(string message)
+    {
+        //
+        // Create a new thread and send a message to the agent
+        //
+
+        var thread = await _chatClient.CreateThreadAsync();
+        var results = await _chatClient.SendMessageAsync(thread, message);
+
+        await foreach (var result in results)
+        {
+            Messages.Add(result);
         }
     }
 
