@@ -22,6 +22,15 @@ foreach(var item in result.Items)
     Console.WriteLine();
 }
 
+var rgc = await client.RevgeocodeAsync(at: "37.422,-122.084");
+foreach (var item in rgc.Items)
+{
+    Console.WriteLine($"Title: {item.Title}");
+    Console.WriteLine($"Address: {item.Address.Label}");
+    Console.WriteLine($"Position: {item.Position.Lat}, {item.Position.Lng}");
+    Console.WriteLine();
+}
+
 public class Options : IOptions<HereMapsOptions>
 {
     public HereMapsOptions Value { get; set; } = new();
