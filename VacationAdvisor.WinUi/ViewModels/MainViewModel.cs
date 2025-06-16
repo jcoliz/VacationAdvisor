@@ -1,12 +1,14 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+﻿using HereMaps.SearchApi;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using VacationAdvisor.WinUi.Services;
 
 namespace VacationAdvisor.WinUi.ViewModels;
-public class MainViewModel(ChatClient chatClient, IDispatcher dispatcher) : INotifyPropertyChanged
+public class MainViewModel(ChatClient chatClient, ApiClient hereMapsClient, IDispatcher dispatcher) : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName)
@@ -78,5 +80,13 @@ public class MainViewModel(ChatClient chatClient, IDispatcher dispatcher) : INot
             }
         }
         AcceptsMessages = true;
+    }
+
+    public async Task<string?> ReverseGeocode(double latitude, double longitude)
+    {
+        // Use the HereMaps client to reverse geocode the coordinates
+        var result = await hereMapsClient.RevgeocodeAsync(at: $"{latitude},{longitude}", types: [ Anonymous22.City ]);
+
+        return result?.Items?.FirstOrDefault()?.Address?.Label;
     }
 }

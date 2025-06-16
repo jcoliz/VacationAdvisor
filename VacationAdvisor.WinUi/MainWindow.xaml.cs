@@ -32,6 +32,21 @@ public sealed partial class MainWindow : Window
 
         // Fix: Use the correct method to set the center and zoom level
         MyMap.Map.Home = n => n.CenterOnAndZoomTo(saoPaulo, 200f);
+
+        MyMap.Map.Info += Map_Info;
+    }
+
+    private async void Map_Info(object? sender, Mapsui.MapInfoEventArgs e)
+    {
+        if (e.MapInfo?.WorldPosition != null)
+        {
+            var lonLat = SphericalMercator.ToLonLat(e.MapInfo.WorldPosition);
+            var place = await VM.ReverseGeocode(lonLat.Y, lonLat.X);
+            if (place != null)
+            {
+                await VM.SendMessageAsync(place);
+            }
+        }
     }
 
     private async void TextBox_KeyUp(object sender, KeyRoutedEventArgs e)

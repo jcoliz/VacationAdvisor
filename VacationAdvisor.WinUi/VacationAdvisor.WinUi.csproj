@@ -49,9 +49,13 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
+	<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
+	<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HereMaps.SearchApi\HereMaps.SearchApi.csproj" />
   </ItemGroup>
 
   <!--

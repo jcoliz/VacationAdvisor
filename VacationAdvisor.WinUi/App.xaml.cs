@@ -2,6 +2,8 @@
 using System.Reflection;
 using Azure.Core;
 using Azure.Identity;
+using HereMaps.SearchApi;
+using HereMaps.SearchApi.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -54,6 +56,9 @@ public partial class App : Application
                 services.AddOptions<AiFoundryOptions>()
                     .Bind(context.Configuration.GetSection(AiFoundryOptions.Section))
                     .ValidateOnStart();
+                services.AddOptions<HereMapsOptions>()
+                    .Bind(context.Configuration.GetSection(HereMapsOptions.Section))
+                    .ValidateOnStart();
                 services.AddSingleton<TokenCredential>(sp =>
                 {
                     return new DefaultAzureCredential();
@@ -61,6 +66,7 @@ public partial class App : Application
                 services.AddSingleton<ChatClient>();
                 services.AddSingleton(x => new Lazy<Window>(() => x.GetRequiredService<MainWindow>()));
                 services.AddSingleton<IDispatcher, Dispatcher>();
+                services.AddHttpClient<ApiClient>();
             })
             .Build();
     }
