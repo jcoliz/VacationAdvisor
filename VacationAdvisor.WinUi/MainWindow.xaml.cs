@@ -1,17 +1,13 @@
 using Mapsui.Extensions;
 using Mapsui.Projections;
-using Mapsui.Providers.Wms;
 using Mapsui.Tiling;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using VacationAdvisor.WinUi.Entities;
-using VacationAdvisor.WinUi.Services;
+using VacationAdvisor.WinUi.ViewModels;
 using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -23,11 +19,11 @@ namespace VacationAdvisor.WinUi;
 /// </summary>
 public sealed partial class MainWindow : Window
 {
-    private readonly ChatClient _chatClient;
+    private MainViewModel VM { get; init; }
 
-    public MainWindow(ChatClient chatClient)
+    public MainWindow(MainViewModel viewModel)
     {
-        _chatClient = chatClient;
+        VM = viewModel;
 
         InitializeComponent();
 
@@ -38,14 +34,6 @@ public sealed partial class MainWindow : Window
         MyMap.Map.Home = n => n.CenterOnAndZoomTo(saoPaulo, 200f);
     }
 
-    public ObservableCollection<ChatMessage> Messages { get; } = new();
-
-    public bool AcceptsMessages
-    {
-        get; set;
-    } 
-    = true;
-
     private async void TextBox_KeyUp(object sender, KeyRoutedEventArgs e)
     {
         var textBox = sender as TextBox;
@@ -53,24 +41,9 @@ public sealed partial class MainWindow : Window
         {
             if (textBox?.Text.Length > 0)
             {
-                await SendMessage(textBox.Text);
+                await VM.SendMessageAsync(textBox.Text);
                 textBox.Text = string.Empty;
             }
-        }
-    }
-
-    private async Task SendMessage(string message)
-    {
-        //
-        // Create a new thread and send a message to the agent
-        //
-
-        var thread = await _chatClient.CreateThreadAsync();
-        var results = await _chatClient.SendMessageAsync(thread, message);
-
-        await foreach (var result in results)
-        {
-            Messages.Add(result);
         }
     }
 

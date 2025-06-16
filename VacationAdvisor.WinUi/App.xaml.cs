@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using VacationAdvisor.WinUi.Options;
 using VacationAdvisor.WinUi.Services;
+using VacationAdvisor.WinUi.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -48,6 +49,7 @@ public partial class App : Application
             })
             .ConfigureServices((context, services) =>
             {
+                services.AddSingleton<MainViewModel>();
                 services.AddSingleton<MainWindow>();
                 services.AddOptions<AiFoundryOptions>()
                     .Bind(context.Configuration.GetSection(AiFoundryOptions.Section))

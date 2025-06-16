@@ -48,7 +48,7 @@
                 </Grid.RowDefinitions>
 
                 <ListView x:Name="InvertedListView"
-                  ItemsSource="{x:Bind Messages}"
+                  ItemsSource="{x:Bind VM.Messages}"
                   Padding="0,0,0,10">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -72,7 +72,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <TextBox IsEnabled="{x:Bind AcceptsMessages, Mode=OneWay}" 
+                <TextBox IsEnabled="{x:Bind VM.AcceptsMessages, Mode=OneWay}" 
                  Grid.Row="1" 
                  Margin="10,0,10,10"
                  KeyUp="TextBox_KeyUp"
@@ -80,7 +80,7 @@
                  PlaceholderText="Ask Vacation Advisor"></TextBox>
                 <ProgressBar Grid.Row="2" 
                      IsIndeterminate="True" 
-                     Visibility="{x:Bind local:MainWindow.BoolToVisibleInversed(AcceptsMessages), Mode=OneWay}" 
+                     Visibility="{x:Bind local:MainWindow.BoolToVisibleInversed(VM.AcceptsMessages), Mode=OneWay}" 
                      HorizontalAlignment="Stretch"/>
 
             </Grid>
