@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using VacationAdvisor.WinUi.Entities;
 using VacationAdvisor.WinUi.Services;
 
 namespace VacationAdvisor.WinUi.ViewModels;
@@ -18,7 +17,7 @@ public class MainViewModel(ChatClient chatClient) : INotifyPropertyChanged
     /// <summary>
     /// Collection of chat messages exchanged with the agent.
     /// </summary>
-    public ObservableCollection<ChatMessage> Messages { get; } = new();
+    public ObservableCollection<ChatMessageViewModel> Messages { get; } = new();
 
     /// <summary>
     /// Whether we are currently accepting messages from the user.
@@ -53,7 +52,7 @@ public class MainViewModel(ChatClient chatClient) : INotifyPropertyChanged
         // Retrieve messages from the thread
         await foreach (var chatMessage in messages)
         {
-            Messages.Add(chatMessage);
+            Messages.Add(new ChatMessageViewModel(chatMessage));
         }
         AcceptsMessages = true;
     }
