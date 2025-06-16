@@ -1,12 +1,19 @@
 using System.Net.Http.Headers;
+using HereMaps.SearchApi.Options;
+using Microsoft.Extensions.Options;
 
 namespace HereMaps.SearchApi;
-public partial class ApiClient
+
+public class ApiClientBase(IOptions<HereMapsOptions> options)
 {
-    public string ApiKey { get; set; } = string.Empty;
+    protected readonly HereMapsOptions Options = options.Value;    
+}
+
+public partial class ApiClient: ApiClientBase
+{
     partial void PrepareRequest(HttpClient client, HttpRequestMessage request, string url)
     {
-        request.RequestUri = new Uri(request.RequestUri + $"&apikey={ApiKey}");
-        request.Headers.UserAgent.Add(ProductInfoHeaderValue.Parse("Weather.Worker/0.0.0"));
+        request.RequestUri = new Uri(request.RequestUri + $"&apikey={Options.ApiKey}");
+        request.Headers.UserAgent.Add(ProductInfoHeaderValue.Parse("HereMaps.SearchApi/0.0.0"));
     }
 }

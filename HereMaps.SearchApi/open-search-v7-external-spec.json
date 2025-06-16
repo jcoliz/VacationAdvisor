@@ -10,7 +10,7 @@
     "url" : "https://www.here.com/docs/category/geocoding-search-v7"
   },
   "servers" : [ {
-    "url" : "/"
+    "url" : "https://geocode.search.hereapi.com/v1"
   } ],
   "security" : [ {
     "Bearer" : [ ]

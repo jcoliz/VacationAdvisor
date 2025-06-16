@@ -10,8 +10,8 @@
   },
   "codeGenerators": {
     "openApiToCSharpClient": {
-      "clientBaseClass": null,
-      "configurationClass": null,
+      "clientBaseClass": "ApiClientBase",
+      "configurationClass": "Microsoft.Extensions.Options.IOptions<HereMaps.SearchApi.Options.HereMapsOptions>",
       "generateClientClasses": true,
       "suppressClientClassesOutput": false,
       "generateClientInterfaces": false,
