@@ -1,4 +1,3 @@
-
 using Azure.AI.Agents.Persistent;
 using System.Threading.Tasks;
 using VacationAdvisor.WinUi.Options;
@@ -141,7 +140,7 @@ public class ChatClient(IOptions<AiFoundryOptions> options, TokenCredential cred
     private async Task DisplayImageContentAsync(string fileId)
     {
         Console.Write($"<image from ID: ./images/{fileId}.png");
-        var result = await GetFileContentAsync(fileId);
+        BinaryData result = await _agentClient.Files.GetFileContentAsync(fileId);
         var stream = result.ToStream();
         Directory.CreateDirectory("images");
         File.Delete($"images/{fileId}.png");
@@ -155,9 +154,9 @@ public class ChatClient(IOptions<AiFoundryOptions> options, TokenCredential cred
         return await _agentClient.Administration.GetAgentAsync(_agentId);
     }
 
-    private async Task<BinaryData> GetFileContentAsync(
-        string fileId)
+    public async Task<Stream> GetFileContentAsync(string fileId)
     {
-        return await _agentClient.Files.GetFileContentAsync(fileId);
+        BinaryData binaryData = await _agentClient.Files.GetFileContentAsync(fileId);
+        return binaryData.ToStream();
     }
 }

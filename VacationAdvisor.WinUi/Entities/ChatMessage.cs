@@ -38,4 +38,9 @@ public record ChatMessage
         .Where(x => x.Type == Content.ContentType.Text)
         .FirstOrDefault()?
         .Text;
+
+    public string? ImageId => Contents
+        .Where(x => x.Type == Content.ContentType.Image)
+        .FirstOrDefault()?
+        .ImageId;
 }
