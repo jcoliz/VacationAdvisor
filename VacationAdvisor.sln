@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VacationAdvisor.WinUi", "Va
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HereMaps.SearchApi", "HereMaps.SearchApi\HereMaps.SearchApi.csproj", "{1F3B4E92-B428-4C67-9E9B-5C31B1916B0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HereMaps.SearchApi.Cli", "HereMaps.SearchApi.Cli\HereMaps.SearchApi.Cli.csproj", "{C23BD9F9-9B69-4F81-9128-8D3372A67409}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,22 @@ Global
 		{1F3B4E92-B428-4C67-9E9B-5C31B1916B0B}.Release|x64.Build.0 = Release|Any CPU
 		{1F3B4E92-B428-4C67-9E9B-5C31B1916B0B}.Release|x86.ActiveCfg = Release|Any CPU
 		{1F3B4E92-B428-4C67-9E9B-5C31B1916B0B}.Release|x86.Build.0 = Release|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Debug|x64.Build.0 = Debug|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Debug|x86.Build.0 = Debug|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Release|ARM64.Build.0 = Release|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Release|x64.ActiveCfg = Release|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Release|x64.Build.0 = Release|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Release|x86.ActiveCfg = Release|Any CPU
+		{C23BD9F9-9B69-4F81-9128-8D3372A67409}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
