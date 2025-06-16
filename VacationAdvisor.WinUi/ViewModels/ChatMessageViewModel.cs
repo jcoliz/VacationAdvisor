@@ -4,11 +4,12 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using System.ComponentModel;
 using VacationAdvisor.WinUi.Entities;
+using VacationAdvisor.WinUi.Services;
 using Windows.UI;
 
 namespace VacationAdvisor.WinUi.ViewModels;
 
-public class ChatMessageViewModel(ChatMessage message): INotifyPropertyChanged
+public class ChatMessageViewModel(ChatMessage message, IDispatcher dispatcher) : INotifyPropertyChanged
 {
     private ImageSource? _imageSource;
     public ImageSource? ImageSource
@@ -20,6 +21,7 @@ public class ChatMessageViewModel(ChatMessage message): INotifyPropertyChanged
             {
                 _imageSource = value;
                 OnPropertyChanged(nameof(ImageSource));
+                OnPropertyChanged(nameof(ImageVisibility));                
             }
         }
     }
@@ -64,12 +66,12 @@ public class ChatMessageViewModel(ChatMessage message): INotifyPropertyChanged
 
     public Visibility ImageVisibility
     {
-        get => string.IsNullOrEmpty(message.ImageId) ? Visibility.Collapsed : Visibility.Visible;
+        get => _imageSource is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        dispatcher.Dispatch(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
     }
 }

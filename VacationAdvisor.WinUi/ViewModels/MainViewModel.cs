@@ -1,16 +1,19 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.UI.Xaml.Media.Imaging;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
 using VacationAdvisor.WinUi.Services;
 
 namespace VacationAdvisor.WinUi.ViewModels;
-public class MainViewModel(ChatClient chatClient) : INotifyPropertyChanged
+public class MainViewModel(ChatClient chatClient, IDispatcher dispatcher) : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        dispatcher.Dispatch(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
     }
+
     // Add properties and methods for the MainViewModel here
     // Example: public string Title { get; set; } = "Vacation Advisor";
 
@@ -52,7 +55,27 @@ public class MainViewModel(ChatClient chatClient) : INotifyPropertyChanged
         // Retrieve messages from the thread
         await foreach (var chatMessage in messages)
         {
-            Messages.Add(new ChatMessageViewModel(chatMessage));
+            var cvm = new ChatMessageViewModel(chatMessage, dispatcher);
+            Messages.Add(cvm);
+
+            // Load images if the message contains any
+            if (chatMessage.ImageId is not null)
+            {
+                _ = Task.Run(async () =>
+                {
+                    var stream = await chatClient.GetFileContentAsync(chatMessage.ImageId);
+                    if (stream is not null)
+                    {
+                        // Use the dispatcher to update the UI on the main thread
+                        dispatcher.Dispatch(() =>
+                        {
+                            var bitmap = new BitmapImage();
+                            bitmap.SetSource(stream.AsRandomAccessStream());
+                            cvm.ImageSource = bitmap;
+                        });
+                    }
+                });
+            }
         }
         AcceptsMessages = true;
     }

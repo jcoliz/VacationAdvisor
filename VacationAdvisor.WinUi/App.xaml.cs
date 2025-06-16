@@ -59,6 +59,8 @@ public partial class App : Application
                     return new DefaultAzureCredential();
                 });
                 services.AddSingleton<ChatClient>();
+                services.AddSingleton(x => new Lazy<Window>(() => x.GetRequiredService<MainWindow>()));
+                services.AddSingleton<IDispatcher, Dispatcher>();
             })
             .Build();
     }
