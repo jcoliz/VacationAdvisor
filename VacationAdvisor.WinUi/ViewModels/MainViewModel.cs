@@ -89,4 +89,11 @@ public class MainViewModel(ChatClient chatClient, ApiClient hereMapsClient, IDis
 
         return result?.Items?.FirstOrDefault()?.Address?.Label;
     }
+
+    public async Task<DisplayResponseCoordinate?> GeocodeAsync(string query)
+    {
+        // Use the HereMaps client to geocode the query
+        var result = await hereMapsClient.GeocodeAsync(q:query);
+        return result?.Items?.FirstOrDefault()?.Position;
+    }
 }

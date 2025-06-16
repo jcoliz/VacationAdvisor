@@ -56,6 +56,12 @@ public sealed partial class MainWindow : Window
         {
             if (textBox?.Text.Length > 0)
             {
+                var coordinates = await VM.GeocodeAsync(textBox.Text);
+                if (coordinates != null)
+                {
+                    var ll = SphericalMercator.FromLonLat(coordinates.Lng, coordinates.Lat).ToMPoint();
+                    MyMap.Map.Navigator.CenterOnAndZoomTo(ll, 20f);
+                }
                 await VM.SendMessageAsync(textBox.Text);
                 textBox.Text = string.Empty;
             }
