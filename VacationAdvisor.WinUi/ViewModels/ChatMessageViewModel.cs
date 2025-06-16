@@ -19,7 +19,7 @@ public class ChatMessageViewModel(ChatMessage message): INotifyPropertyChanged
             if (_imageSource != value)
             {
                 _imageSource = value;
-                OnPropertyChanged(nameof(Text));
+                OnPropertyChanged(nameof(ImageSource));
             }
         }
     }
