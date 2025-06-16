@@ -48,7 +48,7 @@
       "operationGenerationMode": "SingleClientFromOperationId",
       "additionalNamespaceUsages": [],
       "additionalContractNamespaceUsages": [],
-      "generateOptionalParameters": false,
+      "generateOptionalParameters": true,
       "generateJsonMethods": false,
       "enforceFlagEnums": false,
       "parameterArrayType": "System.Collections.Generic.IEnumerable",
