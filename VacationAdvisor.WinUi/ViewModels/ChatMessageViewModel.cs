@@ -14,7 +14,7 @@ public class ChatMessageViewModel(ChatMessage message): INotifyPropertyChanged
     public ImageSource? ImageSource
     {
         get => _imageSource;
-        private set
+        set
         {
             if (_imageSource != value)
             {
