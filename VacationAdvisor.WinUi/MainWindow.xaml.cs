@@ -28,10 +28,9 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
 
         MyMap.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
-        var saoPaulo = SphericalMercator.FromLonLat(-46.633, -23.55).ToMPoint();
+        var paris = SphericalMercator.FromLonLat(2.3522, 48.8566).ToMPoint();
 
-        // Fix: Use the correct method to set the center and zoom level
-        MyMap.Map.Home = n => n.CenterOnAndZoomTo(saoPaulo, 200f);
+        MyMap.Map.Home = n => n.CenterOnAndZoomTo(paris, 5000f);
 
         MyMap.Map.Info += Map_Info;
     }
