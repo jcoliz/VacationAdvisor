@@ -85,9 +85,33 @@ public class MainViewModel(ChatClient chatClient, ApiClient hereMapsClient, IDis
     public async Task<string?> ReverseGeocode(double latitude, double longitude)
     {
         // Use the HereMaps client to reverse geocode the coordinates
-        var result = await hereMapsClient.RevgeocodeAsync(at: $"{latitude},{longitude}", types: [ Anonymous22.City ]);
 
-        return result?.Items?.FirstOrDefault()?.Address?.Label;
+        // First, try to just request the city
+        var geo = await hereMapsClient.RevgeocodeAsync(at: $"{latitude},{longitude}", types: [ Anonymous22.City ]);
+
+        var result = geo?.Items?.FirstOrDefault()?.Address.Label;
+
+        if (result is not null)
+        {
+            return result;
+        }
+
+        // If that fails, try to get the full address
+        geo = await hereMapsClient.RevgeocodeAsync(at: $"{latitude},{longitude}", types: [Anonymous22.Address]);
+
+        result = geo?.Items?.FirstOrDefault()?.Address.City;
+
+        if (result is not null)
+        {
+            return result;
+        }
+
+        // If that fails, try to get the country
+        geo = await hereMapsClient.RevgeocodeAsync(at: $"{latitude},{longitude}", types: [Anonymous22.Area]);
+
+        result = geo?.Items?.FirstOrDefault()?.Address.Label;
+
+        return result;
     }
 
     public async Task<DisplayResponseCoordinate?> GeocodeAsync(string query)
