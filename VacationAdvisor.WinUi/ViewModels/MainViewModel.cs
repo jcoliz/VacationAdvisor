@@ -1,9 +1,11 @@
 ﻿using HereMaps.SearchApi;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VacationAdvisor.WinUi.Services;
 
@@ -23,6 +25,8 @@ public class MainViewModel(ChatClient chatClient, ApiClient hereMapsClient, IDis
     /// Collection of chat messages exchanged with the agent.
     /// </summary>
     public ObservableCollection<ChatMessageViewModel> Messages { get; } = new();
+
+    public ObservableCollection<Entities.Place> Places { get; } = new();
 
     /// <summary>
     /// Whether we are currently accepting messages from the user.
@@ -57,6 +61,34 @@ public class MainViewModel(ChatClient chatClient, ApiClient hereMapsClient, IDis
         // Retrieve messages from the thread
         await foreach (var chatMessage in messages)
         {
+            var regex = new Regex("```json(?<json>.+?)```", RegexOptions.Singleline);
+            var match = regex.Match(chatMessage.Text ?? string.Empty);
+            if (match.Success && match.Groups["json"].Success)
+            {
+                chatMessage.Contents.First().Text = regex.Replace(chatMessage.Text ?? string.Empty, string.Empty).Trim();
+                var json = match.Groups["json"].Value;
+
+                try
+                {
+                    // If the message contains JSON, we can parse as Places
+                    // and display them on the map
+                    var places = System.Text.Json.JsonSerializer.Deserialize<List<Entities.Place>>(json);
+
+                    if (places is not null)
+                    {
+                        Places.Clear();
+                        foreach (var place in places)
+                        {
+                            // Add the place to the collection
+                            Places.Add(place);
+                        }
+                    }
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                }
+            }
+
             var cvm = new ChatMessageViewModel(chatMessage, dispatcher);
             Messages.Add(cvm);
 
