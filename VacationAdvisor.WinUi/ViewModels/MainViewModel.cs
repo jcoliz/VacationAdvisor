@@ -26,7 +26,7 @@ public class MainViewModel(ChatClient chatClient, ApiClient hereMapsClient, IDis
     /// </summary>
     public ObservableCollection<ChatMessageViewModel> Messages { get; } = new();
 
-    public ObservableCollection<Entities.Place> Places { get; } = new();
+    public List<Entities.Place> Places { get; } = new();
 
     /// <summary>
     /// Whether we are currently accepting messages from the user.
@@ -77,11 +77,8 @@ public class MainViewModel(ChatClient chatClient, ApiClient hereMapsClient, IDis
                     if (places is not null)
                     {
                         Places.Clear();
-                        foreach (var place in places)
-                        {
-                            // Add the place to the collection
-                            Places.Add(place);
-                        }
+                        Places.AddRange(places);
+                        OnPropertyChanged(nameof(Places));
                     }
                 }
                 catch (System.Text.Json.JsonException ex)

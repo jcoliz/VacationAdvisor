@@ -39,7 +39,23 @@ public sealed partial class MainWindow : Window
 
         MyMap.Map.Info += Map_Info;
 
-        MyMap.Map.Layers.Add(CreatePointLayer());
+        _pinLayer = CreatePointLayer();
+        MyMap.Map.Layers.Add(_pinLayer);
+
+        viewModel.PropertyChanged += ViewModel_PropertyChanged;
+    }
+
+    private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainViewModel.Places))
+        {
+            // Update the pin layer with new places
+            if (_pinLayer != null)
+            {
+                _pinLayer.Features = LoadPins(VM.Places);
+                _pinLayer.DataHasChanged();
+            }
+        }
     }
 
     // https://github.com/Mapsui/Mapsui/discussions/1950
@@ -49,19 +65,22 @@ public sealed partial class MainWindow : Window
         {
             Name = "Displayed Places",
             IsMapInfoLayer = true,
-            Features = new MemoryProvider(LoadPins()).Features,
             Style = SymbolStyles.CreatePinStyle(symbolScale: 0.7),
         };
     }
 
-    private static IEnumerable<IFeature> LoadPins()
+    private static IEnumerable<IFeature> LoadPins(IEnumerable<Place> places)
     {
         List<IFeature> features = new List<IFeature>();
-        var paris = SphericalMercator.FromLonLat(2.3522, 48.8566).ToMPoint();
-        IFeature feature = new PointFeature(paris);
-        features.Add(feature);
+        
+        foreach (var place in places)
+        {
+            var point = SphericalMercator.FromLonLat(place.Longitude, place.Latitude).ToMPoint();
+            features.Add(new PointFeature(point));
+        }
 
-        return features;
+        // What does this even do?
+        return new MemoryProvider(features).Features;
     }
 
     private async void Map_Info(object? sender, Mapsui.MapInfoEventArgs e)
