@@ -12,6 +12,9 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Embedded\Pin.svg" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -25,6 +28,10 @@
 
     <ItemGroup Condition="Exists('config.toml')">
 	    <EmbeddedResource Include="config.toml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Embedded\Pin.svg" />
     </ItemGroup>
 
   <ItemGroup>
