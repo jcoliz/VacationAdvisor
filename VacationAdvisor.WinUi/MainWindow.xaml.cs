@@ -1,14 +1,10 @@
 using Mapsui;
-using Mapsui.Nts;
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Projections;
-using Mapsui.Tiling;
+using Mapsui.Providers;
 using Mapsui.Styles;
-using Mapsui.UI.WinUI;
-using Mapsui.Utilities;
-using Mapsui.Widgets.ScaleBar;
-using Mapsui.Widgets.Zoom;
+using Mapsui.Tiling;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,8 +13,6 @@ using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using VacationAdvisor.WinUi.Entities;
 using VacationAdvisor.WinUi.ViewModels;
-using Windows.UI;
-using NetTopologySuite.Geometries;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -45,34 +39,29 @@ public sealed partial class MainWindow : Window
 
         MyMap.Map.Info += Map_Info;
 
-        AddPinLayer();
+        MyMap.Map.Layers.Add(CreatePointLayer());
     }
 
-    private void AddPinLayer()
+    // https://github.com/Mapsui/Mapsui/discussions/1950
+    private static MemoryLayer CreatePointLayer()
     {
+        return new MemoryLayer
+        {
+            Name = "Displayed Places",
+            IsMapInfoLayer = true,
+            Features = new MemoryProvider(LoadPins()).Features,
+            Style = SymbolStyles.CreatePinStyle(symbolScale: 0.7),
+        };
+    }
+
+    private static IEnumerable<IFeature> LoadPins()
+    {
+        List<IFeature> features = new List<IFeature>();
         var paris = SphericalMercator.FromLonLat(2.3522, 48.8566).ToMPoint();
+        IFeature feature = new PointFeature(paris);
+        features.Add(feature);
 
-        // Create a feature for the pin
-        var pinFeature = new GeometryFeature
-        {
-            Geometry = new Point(2.3522, 48.8566),
-        };
-        pinFeature.Styles.Add(new SymbolStyle
-        {
-            SymbolScale = 0.8,
-            Fill = new Mapsui.Styles.Brush(Mapsui.Styles.Color.Red),
-            Outline = new Pen(Mapsui.Styles.Color.White, 2),
-            //BitmapId = BitmapRegistry.Instance.Register(EmbeddedResourceLoader.Load("Embedded.Pin.svg",typeof(MainWindow)))
-        });
-
-        // Create the memory layer and add the feature
-        _pinLayer = new MemoryLayer
-        {
-            Name = "PinLayer",
-            Features = new List<IFeature> { pinFeature }
-        };
-
-        MyMap.Map.Layers.Add(_pinLayer);
+        return features;
     }
 
     private async void Map_Info(object? sender, Mapsui.MapInfoEventArgs e)
